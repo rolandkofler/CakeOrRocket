@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/CakeOrRocket/static/css/main.e6c13ad2.css",
-    "main.js": "/CakeOrRocket/static/js/main.34b98ce5.js",
+    "main.js": "/CakeOrRocket/static/js/main.f3465517.js",
     "static/js/453.43fa743b.chunk.js": "/CakeOrRocket/static/js/453.43fa743b.chunk.js",
     "index.html": "/CakeOrRocket/index.html",
     "main.e6c13ad2.css.map": "/CakeOrRocket/static/css/main.e6c13ad2.css.map",
-    "main.34b98ce5.js.map": "/CakeOrRocket/static/js/main.34b98ce5.js.map",
+    "main.f3465517.js.map": "/CakeOrRocket/static/js/main.f3465517.js.map",
     "453.43fa743b.chunk.js.map": "/CakeOrRocket/static/js/453.43fa743b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.34b98ce5.js"
+    "static/js/main.f3465517.js"
   ]
 }
