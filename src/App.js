@@ -27,7 +27,7 @@ const initialRows = [
   { activity: "Cooking a healthy meal", scale: 4, importance: 50 },
   { activity: "Meditating", scale: 3, importance: 40 },
   { activity: "Calling a friend", scale: 2, importance: 50 },
-  { activity: "Learning a new skill", scale: 5, importance: 70 },
+  { activity: "Learning a new skill", scale: 5, importance: 100 },
 ];
 
 function weightedMean(data) {
@@ -43,27 +43,56 @@ function weightedMean(data) {
 
 function ScaleSelector({ value, onChange }) {
   return (
-    <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+    <div
+      style={{
+        display: "flex",
+        gap: 8,
+        justifyContent: "center",
+        flexWrap: "nowrap", // Kein Umbruch!
+        //overflowX: "auto",  // Horizontal scrollen, wenn nötig
+        WebkitOverflowScrolling: "touch", // Für sanftes Scrollen auf iOS
+        paddingBottom: 8, // Platz für Scrollbar auf mobilen Geräten
+        scrollbarWidth: "thin" // Dünnere Scrollbar in Firefox
+      }}
+    >
       {SCALE.map((s, idx) => (
-        <label key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", minWidth: 40 }}>
-          <div style={{
-            width: 40,
-            height: 40,
-            background: s.color,
+        <label
+          key={idx}
+          style={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 6,
-            boxShadow: value === idx ? "0 0 0 3px #222 inset" : "none",
-            transition: "box-shadow 0.15s"
-          }}>
-            <span style={{
-              fontSize: 24,
-              color: "#fff",
-              fontWeight: 700,
-              fontFamily: "Montserrat, Arial, sans-serif"
-            }}>
-              {isNaN(Number(s.label)) ? <span style={{fontFamily: "monospace"}}>{s.label}</span> : s.label}
+            cursor: "pointer",
+           // minWidth: 40,
+           // flex: "1" // Verhindert, dass die Buttons schrumpfen
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              background: s.color,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 6,
+              boxShadow: value === idx ? "0 0 0 3px #222 inset" : "none",
+              transition: "box-shadow 0.15s"
+            }}
+          >
+            <span
+              style={{
+                fontSize: 24,
+                color: "#fff",
+                fontWeight: 700,
+                fontFamily: "Montserrat, Arial, sans-serif"
+              }}
+            >
+              {isNaN(Number(s.label)) ? (
+                <span style={{ fontFamily: "monospace" }}>{s.label}</span>
+              ) : (
+                s.label
+              )}
             </span>
           </div>
           <input
@@ -78,6 +107,7 @@ function ScaleSelector({ value, onChange }) {
     </div>
   );
 }
+
 
 export default function App() {
   const [rows, setRows] = useState(initialRows);
@@ -218,7 +248,7 @@ export default function App() {
                   <input
                     value={row.activity}
                     onChange={(e) => handleChange(i, "activity", e.target.value)}
-                    style={{ width: 160 }}
+                    style={{ width: 160, fontSize: "1em", color: "#222", padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
                     placeholder="Activity"
                   />
                 </td>
@@ -235,7 +265,7 @@ export default function App() {
                     max="100"
                     value={row.importance}
                     onChange={(e) => handleChange(i, "importance", Number(e.target.value))}
-                    style={{ width: 60 }}
+                    style={{ width: 50, textAlign: "right", fontSize: "1.2em", fontWeight: 700, color: "#222" }}
                   />
                 </td>
                 <td>
@@ -248,12 +278,12 @@ export default function App() {
           </tbody>
         </table>
       </div>
-      <button onClick={addRow} style={{ marginBottom: 24 }}>
+      <button onClick={addRow} style={{ marginBottom: 24, background: "#457b9d", color: "#fff", padding: "8px 16px", borderRadius: 4, border: "none", fontSize: "1.2em", fontWeight: 700, cursor: "pointer" }}>
         + Add Activity
       </button>
       <div style={{ margin: "24px 0", display: "flex", gap: 16 }}>
-        <button onClick={downloadYAML}>⬇️ Download YAML</button>
-        <button onClick={() => fileInputRef.current.click()}>⬆️ Upload YAML</button>
+        <button onClick={downloadYAML}>⬇️ Download your Data</button>
+        <button onClick={() => fileInputRef.current.click()}>⬆️ Upload your Data</button>
         <input
           type="file"
           accept=".yaml,.yml,text/yaml"
