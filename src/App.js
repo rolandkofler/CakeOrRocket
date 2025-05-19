@@ -43,18 +43,7 @@ function weightedMean(data) {
 
 function ScaleSelector({ value, onChange }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 8,
-        justifyContent: "center",
-        flexWrap: "nowrap", // Kein Umbruch!
-        //overflowX: "auto",  // Horizontal scrollen, wenn nötig
-        WebkitOverflowScrolling: "touch", // Für sanftes Scrollen auf iOS
-        paddingBottom: 8, // Platz für Scrollbar auf mobilen Geräten
-        scrollbarWidth: "thin" // Dünnere Scrollbar in Firefox
-      }}
-    >
+    <div className="scale-selector">
       {SCALE.map((s, idx) => (
         <label
           key={idx}
@@ -62,9 +51,7 @@ function ScaleSelector({ value, onChange }) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            cursor: "pointer",
-           // minWidth: 40,
-           // flex: "1" // Verhindert, dass die Buttons schrumpfen
+            cursor: "pointer"
           }}
         >
           <div

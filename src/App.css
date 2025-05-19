@@ -177,5 +177,29 @@ button {
   border-radius: 8px;
 }
 
+.scale-selector {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap; /* Standard: Umbruch für Desktop */
+}
+
+.scale-selector label {
+  min-width: 40px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+  .scale-selector {
+    flex-wrap: nowrap;           /* Kein Umbruch auf Mobile */
+    overflow-x: auto;            /* Horizontal scrollen */
+    justify-content: flex-start; /* Start für besseres Scrollen */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+}
+
+
 
 
