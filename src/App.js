@@ -1,21 +1,16 @@
-import React, { useState, useRef } from "react";
-import { Bar } from "react-chartjs-2";
-import Chart from "chart.js/auto";
-import annotationPlugin from "chartjs-plugin-annotation";
+import React, { useState, useRef, useEffect } from "react";
 import * as yaml from "js-yaml";
 
-Chart.register(annotationPlugin);
-
+// Constants
 const SCALE = [
   { label: "🍰", value: 1, color: "#e63946" },    // Rot
   { label: "2", value: 2, color: "#f77f00" },     // Orange
   { label: "3", value: 3, color: "#fcbf49" },     // Gelb
   { label: "⚖️", value: 4, color: "#a8dadc" },    // Hellblau
   { label: "5", value: 5, color: "#2a9d8f" },     // Blau
-  { label: "6", value: 6, color: "#378d96" },     // Blaugrün (perfekter Übergang)
+  { label: "6", value: 6, color: "#378d96" },     // Blaugrün
   { label: "🚀", value: 7, color: "#457b9d" }     // Türkis
-]
-
+];
 
 const initialRows = [
   { activity: "Running", scale: 3, importance: 70 },
@@ -30,29 +25,16 @@ const initialRows = [
   { activity: "Learning a new skill", scale: 5, importance: 100 },
 ];
 
-function weightedMean(data) {
-  let total = 0, weighted = 0;
-  data.forEach((row) => {
-    if (row.scale !== null && row.importance) {
-      total += Number(row.importance);
-      weighted += Number(row.importance) * SCALE[row.scale].value;
-    }
-  });
-  return total ? weighted / total : 0;
-}
-
 function ScaleSelector({ value, onChange }) {
   return (
     <div
       style={{
         display: "flex",
-        gap: 8,
+        gap: "8px",
         justifyContent: "center",
-        flexWrap: "nowrap", // Kein Umbruch!
-        //overflowX: "auto",  // Horizontal scrollen, wenn nötig
-        WebkitOverflowScrolling: "touch", // Für sanftes Scrollen auf iOS
-        paddingBottom: 8, // Platz für Scrollbar auf mobilen Geräten
-        scrollbarWidth: "thin" // Dünnere Scrollbar in Firefox
+        flexWrap: "nowrap",
+        overflowX: "auto",
+        paddingBottom: "8px"
       }}
     >
       {SCALE.map((s, idx) => (
@@ -62,30 +44,27 @@ function ScaleSelector({ value, onChange }) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            cursor: "pointer",
-           // minWidth: 40,
-           // flex: "1" // Verhindert, dass die Buttons schrumpfen
+            cursor: "pointer"
           }}
         >
           <div
             style={{
-              width: 40,
-              height: 40,
+              width: "40px",
+              height: "40px",
               background: s.color,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 6,
+              borderRadius: "6px",
               boxShadow: value === idx ? "0 0 0 3px #222 inset" : "none",
               transition: "box-shadow 0.15s"
             }}
           >
             <span
               style={{
-                fontSize: 24,
+                fontSize: "24px",
                 color: "#fff",
-                fontWeight: 700,
-                fontFamily: "Montserrat, Arial, sans-serif"
+                fontWeight: "700"
               }}
             >
               {isNaN(Number(s.label)) ? (
@@ -108,10 +87,299 @@ function ScaleSelector({ value, onChange }) {
   );
 }
 
+// Simple Chart Component with Mean Line
+function SimpleChart({ sums, mean }) {
+  const maxValue = Math.max(...sums);
 
-export default function App() {
+  // Berechne die Position der Mean-Linie
+  // Skaliere den Mean-Wert von 1-7 zu einer Position innerhalb des Charts (in Prozent)
+  const meanLinePosition = ((mean - 1) / 6) * 100; // 1 ist der Mindestwert (Cake), 7 ist der Höchstwert (Rocket)
+
+  return (
+    <div style={{
+      background: "#fafafa",
+      borderRadius: "16px",
+      padding: "16px",
+      marginBottom: "24px",
+      boxShadow: "0 2px 8px rgba(34,34,34,0.07)",
+      height: "320px",
+      position: "relative" // Wichtig für absolute Positionierung der Mean-Linie
+    }}>
+      <div style={{ textAlign: "center", marginBottom: "48px", fontWeight: "bold" }}>
+        Total Importance by Scale
+      </div>
+
+      <div style={{
+        display: "flex",
+        height: "200px",
+        alignItems: "flex-end",
+        justifyContent: "space-around",
+        position: "relative" // Für die Mean-Linie
+      }}>
+        {/* Mean Line */}
+        <div style={{
+          position: "absolute",
+          left: `${meanLinePosition}%`,
+          bottom: "20px",
+          top: "0",
+          width: "2px",
+          backgroundColor: "#e63946",
+          zIndex: "10"
+        }}></div>
+
+        {/* Mean Line Label */}
+        <div style={{
+          position: "absolute",
+          left: `${meanLinePosition}%`,
+          top: "100px",
+          transform: "translateX(-50%)",
+          backgroundColor: "#e63946",
+          color: "white",
+          padding: "2px 6px",
+          borderRadius: "4px",
+          fontSize: "12px",
+          fontWeight: "bold",
+          whiteSpace: "nowrap"
+        }}>
+          Mean: {mean.toFixed(2)}
+        </div>
+
+        {sums.map((value, index) => (
+          <div key={index} style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: `${100/sums.length}%`
+          }}>
+            <div style={{
+              marginBottom: "4px",
+              fontSize: "12px",
+              color: "#666"
+            }}>
+              {value}
+            </div>
+            <div style={{
+              width: "30px",
+              backgroundColor: SCALE[index].color,
+              height: maxValue ? `${(value / maxValue) * 180}px` : "0px",
+              borderTopLeftRadius: "4px",
+              borderTopRightRadius: "4px"
+            }}></div>
+            <div style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              textAlign: "center"
+            }}>
+              {SCALE[index].label}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Mean Value Display */}
+      <div style={{ marginTop: "24px", textAlign: "center" }}>
+        <div style={{
+          fontSize: "10px",
+          fontWeight: "bold"
+        }}>
+          Weighted Mean: <span style={{ color: "#e63946" }}>{mean.toFixed(2)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActivityRow({ row, index, handleChange, removeRow, isMobile }) {
+  if (isMobile) {
+    return (
+      <div style={{
+        padding: "16px",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        marginBottom: "16px",
+        position: "relative",
+        background: "#fafafa"
+      }}>
+        <input
+          style={{
+            width: "100%",
+            fontSize: "18px",
+            color: "#222",
+            padding: "10px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            marginBottom: "12px",
+            boxSizing: "border-box"
+          }}
+          value={row.activity}
+          onChange={(e) => handleChange(index, "activity", e.target.value)}
+          placeholder="Activity"
+        />
+        <ScaleSelector
+          value={row.scale}
+          onChange={(idx) => handleChange(index, "scale", idx)}
+        />
+        <div style={{
+          marginTop: "12px",
+          display: "flex",
+          alignItems: "center"
+        }}>
+          <label style={{
+            marginRight: "8px",
+            fontSize: "14px",
+            fontWeight: "500"
+          }}>
+            Importance:
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="100"
+            value={row.importance}
+            onChange={(e) => handleChange(index, "importance", Number(e.target.value))}
+            style={{
+              width: "60px",
+              textAlign: "right",
+              fontSize: "18px",
+              fontWeight: "700",
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc"
+            }}
+          />
+          <button
+            onClick={() => removeRow(index)}
+            style={{
+              marginLeft: "auto",
+              color: "#e63946",
+              background: "none",
+              fontWeight: "700",
+              fontSize: "20px",
+              border: "none",
+              cursor: "pointer"
+            }}
+            title="Delete"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <tr style={{ textAlign: "center" }}>
+      <td style={{ padding: "8px" }}>
+        <input
+          value={row.activity}
+          onChange={(e) => handleChange(index, "activity", e.target.value)}
+          style={{
+            width: "160px",
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            fontSize: "16px"
+          }}
+          placeholder="Activity"
+        />
+      </td>
+      <td style={{ padding: "8px" }}>
+        <ScaleSelector
+          value={row.scale}
+          onChange={(idx) => handleChange(index, "scale", idx)}
+        />
+      </td>
+      <td style={{ padding: "8px" }}>
+        <input
+          type="number"
+          min="1"
+          max="100"
+          value={row.importance}
+          onChange={(e) => handleChange(index, "importance", Number(e.target.value))}
+          style={{
+            width: "50px",
+            textAlign: "right",
+            fontSize: "18px",
+            fontWeight: "700",
+            padding: "4px"
+          }}
+        />
+      </td>
+      <td style={{ padding: "8px" }}>
+        <button
+          onClick={() => removeRow(index)}
+          style={{
+            color: "#e63946",
+            background: "none",
+            fontWeight: "700",
+            fontSize: "20px",
+            border: "none",
+            cursor: "pointer"
+          }}
+          title="Delete"
+        >
+          ✕
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+export default function ImprovedApp() {
   const [rows, setRows] = useState(initialRows);
+  const [isMobile, setIsMobile] = useState(false);
   const fileInputRef = useRef();
+
+  // Handle window resize for responsive design
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 700);
+    };
+
+    handleResize(); // Check initial size
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  function weightedMean(data) {
+    let total = 0, weighted = 0;
+    data.forEach((row) => {
+      if (row.scale !== null && row.importance) {
+        total += Number(row.importance);
+        weighted += Number(row.importance) * SCALE[row.scale].value;
+      }
+    });
+    return total ? weighted / total : 0;
+  }
+
+  const handleChange = (i, field, value) => {
+    const newRows = [...rows];
+    newRows[i][field] = field === "scale" ? Number(value) : value;
+    setRows(newRows);
+  };
+
+  const addRow = () => {
+    setRows([...rows, { activity: "", scale: null, importance: 50 }]);
+  };
+
+  const removeRow = (i) => {
+    const newRows = [...rows];
+    newRows.splice(i, 1);
+    setRows(newRows);
+  };
+
+  // Calculate sums for each scale
+  const sums = Array(7).fill(0);
+  rows.forEach((row) => {
+    if (row.scale !== null && row.importance) {
+      sums[row.scale] += Number(row.importance);
+    }
+  });
+
+  const mean = weightedMean(rows);
 
   const downloadYAML = () => {
     const yamlStr = yaml.dump(rows, { sortKeys: false, lineWidth: 80 });
@@ -140,213 +408,207 @@ export default function App() {
     reader.readAsText(file);
   };
 
-  const handleChange = (i, field, value) => {
-    const newRows = [...rows];
-    newRows[i][field] = field === "scale" ? Number(value) : value;
-    setRows(newRows);
-  };
-
-  const addRow = () => {
-    setRows([...rows, { activity: "", scale: null, importance: 1 }]);
-  };
-
-  const removeRow = (i) => {
-    const newRows = [...rows];
-    newRows.splice(i, 1);
-    setRows(newRows);
-  };
-
-  const sums = Array(7).fill(0);
-  rows.forEach((row) => {
-    if (row.scale !== null && row.importance) {
-      sums[row.scale] += Number(row.importance);
-    }
-  });
-
-  const mean = weightedMean(rows);
-
-  const chartData = {
-    labels: SCALE.map((s) => `${s.label} (${s.value})`),
-    datasets: [
-      {
-        label: "Total Importance",
-        data: sums,
-        backgroundColor: SCALE.map(s => s.color),
-      },
-    ],
-  };
-
-  const chartOptions = {
-    plugins: {
-      legend: { display: false },
-      annotation: {
-        annotations: {
-          meanLine: {
-            type: "line",
-            xMin: mean - 1,
-            xMax: mean - 1,
-            borderColor: "#e63946",
-            borderWidth: 3,
-            label: {
-              content: `Weighted Mean: ${mean.toFixed(2)}`,
-              enabled: true,
-              position: "start",
-              backgroundColor: "#fff",
-              color: "#e63946",
-              font: { weight: "bold", size: 14 },
-            },
-          },
-        },
-      },
-    },
-    scales: {
-      x: {
-        title: { display: true, text: "Scale (Consumption to Investment)" },
-        grid: { color: "#eee" },
-        ticks: { color: "#222", font: { family: "Montserrat" } }
-      },
-      y: {
-        title: { display: true, text: "Total Importance" },
-        beginAtZero: true,
-        grid: { color: "#eee" },
-        ticks: { color: "#222", font: { family: "Montserrat" } }
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
   return (
-    <div style={{ maxWidth: 950, margin: "0 auto", fontFamily: "Montserrat, Arial, sans-serif" }}>
-      <header style={{display: "flex", alignItems: "center", gap: 12, margin: "32px 0 18px 0"}}>
-        <h2 style={{margin: 0, fontWeight: 700, fontSize: "2em", letterSpacing: "1px"}}>🍰🚀 Cake or Rocket?</h2>
-        <sub style={{fontSize: "0.8em", color: "#aaa"}}>v0.1</sub>
+    <div style={{
+      maxWidth: "950px",
+      margin: "0 auto",
+      fontFamily: "Montserrat, Arial, sans-serif",
+      padding: "0 16px"
+    }}>
+      <header style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        margin: "32px 0 18px 0"
+      }}>
+        <h2 style={{
+          margin: 0,
+          fontWeight: 700,
+          fontSize: "2em",
+          letterSpacing: "1px"
+        }}>
+          🍰🚀 Cake or Rocket?
+        </h2>
+        <sub style={{
+          fontSize: "0.8em",
+          color: "#aaa"
+        }}>
+          v0.2
+        </sub>
       </header>
-        <p style={{fontSize: "1.2em", fontWeight: 700, color: "#222"}}><span style={{color: "#e63946"}}>🍰</span> = Consumption, <span style={{color: "#457b9d"}}>🚀</span> = Investment</p>
-        <p style={{fontSize: "1.2em", fontWeight: 700, color: "#222"}}>Rate your activities on a scale from <span style={{color: "#e63946"}}>🍰</span> to <span style={{color: "#457b9d"}}>🚀</span> and their importance from 1 to 100.</p>
-      <div style={{
-  height: 6,
-  width: "100%",
-  background: "linear-gradient(90deg, #e63946, #f77f00, #fcbf49, #a8dadc, #457b9d, #378d96, #2a9d8f)",
-  borderRadius: 3,
-  marginBottom: 18
-}} />
-      <div className="responsive-table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Activity</th>
-              <th style={{minWidth: 280}}>Scale</th>
-              <th>Importance<br />(1–100)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-  {rows.map((row, i) => {
-    // Mobile: Card-Layout
-    if (window.innerWidth <= 700 || false) {
-      return (
-        <tr key={i}>
-          <td colSpan={4} style={{ padding: 0, border: "none" }}>
 
-            <div className="activity-card" style={{ padding: 16, border: "1px solid #ccc", borderRadius: 8, marginBottom: 16 }}>
-              <input
-                className="activity-card activity-input" style={{ width: "100%", fontSize: "1.2em", color: "#222", padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
-                value={row.activity}
-                onChange={(e) => handleChange(i, "activity", e.target.value)}
-                placeholder="Activity"
-              />
-              <ScaleSelector style={{ padding: 10 }}
-                value={row.scale}
-                onChange={(idx) => handleChange(i, "scale", idx)}
-              />
-              <input style={{ width: "10%", fontSize: "1.2em", color: "#222", padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
-                className="importance-input"
-                type="number"
-                min="1"
-                max="100"
-                value={row.importance}
-                onChange={(e) => handleChange(i, "importance", Number(e.target.value))}
-                placeholder="Importance (1–100)"
-              />
-              <button style={{ color: "#e63946", background: "none", fontWeight: 700, fontSize: "1.2em" }}
-                className="delete-btn"
-                onClick={() => removeRow(i)}
-                title="Delete"
-              >
-                ✕
-              </button>
-            </div>
-          </td>
-        </tr>
-      );
-    }
-    // Desktop: Tabellenzeile
-    return (
-      <tr key={i} style={{ textAlign: "center" }}>
-        <td>
-          <input
-            value={row.activity}
-            onChange={(e) => handleChange(i, "activity", e.target.value)}
-            style={{
-              width: 160,
-              fontSize: "1em",
-              color: "#222",
-              padding: 10,
-              borderRadius: 4,
-              border: "1px solid #ccc"
-            }}
-            placeholder="Activity"
-          />
-        </td>
-        <td>
-          <ScaleSelector
-            value={row.scale}
-            onChange={(idx) => handleChange(i, "scale", idx)}
-          />
-        </td>
-        <td>
-          <input
-            type="number"
-            min="1"
-            max="100"
-            value={row.importance}
-            onChange={(e) => handleChange(i, "importance", Number(e.target.value))}
-            style={{
-              width: 50,
-              textAlign: "right",
-              fontSize: "1.2em",
-              fontWeight: 700,
-              color: "#222"
-            }}
-          />
-        </td>
-        <td>
-          <button
-            onClick={() => removeRow(i)}
-            style={{
-              color: "#e63946",
-              background: "none",
-              fontWeight: 700,
-              fontSize: "1.2em"
-            }}
-            title="Delete"
-          >
-            ✕
-          </button>
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
-        </table>
-      </div>
-      <button onClick={addRow} style={{ marginBottom: 24, background: "#457b9d", color: "#fff", padding: "8px 16px", borderRadius: 4, border: "none", fontSize: "1.2em", fontWeight: 700, cursor: "pointer" }}>
+      <p style={{
+        fontSize: "1.2em",
+        fontWeight: 700,
+        color: "#222"
+      }}>
+        <span style={{color: "#e63946"}}>🍰</span> = Consumption,
+        <span style={{color: "#457b9d"}}>🚀</span> = Investment
+      </p>
+
+      <p style={{
+        fontSize: "1.2em",
+        fontWeight: 700,
+        color: "#222",
+        marginBottom: "16px"
+      }}>
+        Rate your activities on a scale from
+        <span style={{color: "#e63946"}}> 🍰 </span>
+        to
+        <span style={{color: "#457b9d"}}> 🚀 </span>
+        and their importance.
+      </p>
+
+      <div style={{
+        height: "6px",
+        width: "100%",
+        background: "linear-gradient(90deg, #e63946, #f77f00, #fcbf49, #a8dadc, #457b9d, #378d96, #2a9d8f)",
+        borderRadius: "3px",
+        marginBottom: "18px"
+      }} />
+
+      {isMobile ? (
+        <div>
+          {rows.map((row, i) => (
+            <ActivityRow
+              key={i}
+              row={row}
+              index={i}
+              handleChange={handleChange}
+              removeRow={removeRow}
+              isMobile={true}
+            />
+          ))}
+        </div>
+      ) : (
+        <div style={{
+          width: "100%",
+          overflowX: "auto",
+          background: "#fafafa",
+          borderRadius: "16px",
+          boxShadow: "0 2px 8px rgba(34,34,34,0.05)",
+          padding: "8px 0",
+          marginBottom: "24px"
+        }}>
+          <table style={{
+            width: "100%",
+            minWidth: "650px",
+            borderCollapse: "separate",
+            borderSpacing: 0,
+            fontSize: "1.05em",
+            background: "transparent"
+          }}>
+            <thead>
+              <tr>
+                <th style={{
+                  padding: "10px 6px",
+                  textAlign: "center",
+                  background: "#f1c40f",
+                  color: "#222",
+                  fontWeight: 700,
+                  borderBottom: "3px solid #e63946"
+                }}>
+                  Activity
+                </th>
+                <th style={{
+                  padding: "10px 6px",
+                  textAlign: "center",
+                  background: "#f1c40f",
+                  color: "#222",
+                  fontWeight: 700,
+                  borderBottom: "3px solid #e63946",
+                  minWidth: "280px"
+                }}>
+                  Scale
+                </th>
+                <th style={{
+                  padding: "10px 6px",
+                  textAlign: "center",
+                  background: "#f1c40f",
+                  color: "#222",
+                  fontWeight: 700,
+                  borderBottom: "3px solid #e63946"
+                }}>
+                  Importance<br />(1–100)
+                </th>
+                <th style={{
+                  padding: "10px 6px",
+                  textAlign: "center",
+                  background: "#f1c40f",
+                  color: "#222",
+                  fontWeight: 700,
+                  borderBottom: "3px solid #e63946"
+                }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <ActivityRow
+                  key={i}
+                  row={row}
+                  index={i}
+                  handleChange={handleChange}
+                  removeRow={removeRow}
+                  isMobile={false}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <button
+        onClick={addRow}
+        style={{
+          marginBottom: "24px",
+          background: "#457b9d",
+          color: "#fff",
+          padding: "8px 16px",
+          borderRadius: "4px",
+          border: "none",
+          fontSize: "1.2em",
+          fontWeight: "700",
+          cursor: "pointer"
+        }}
+      >
         + Add Activity
       </button>
-      <div style={{ margin: "24px 0", display: "flex", gap: 16 }}>
-        <button onClick={downloadYAML}>⬇️ Download your Data</button>
-        <button onClick={() => fileInputRef.current.click()}>⬆️ Upload your Data</button>
+
+      <div style={{
+        margin: "24px 0",
+        display: "flex",
+        gap: "16px"
+      }}>
+        <button
+          onClick={downloadYAML}
+          style={{
+            background: "#e63946",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            padding: "8px 16px",
+            fontSize: "1em",
+            fontWeight: "700",
+            cursor: "pointer"
+          }}
+        >
+          ⬇️ Download your Data
+        </button>
+        <button
+          onClick={() => fileInputRef.current.click()}
+          style={{
+            background: "#e63946",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            padding: "8px 16px",
+            fontSize: "1em",
+            fontWeight: "700",
+            cursor: "pointer"
+          }}
+        >
+          ⬆️ Upload your Data
+        </button>
         <input
           type="file"
           accept=".yaml,.yml,text/yaml"
@@ -355,33 +617,29 @@ export default function App() {
           onChange={uploadYAML}
         />
       </div>
-      <div className="chart-container" style={{ height: 320 }}>
-        <Bar data={chartData} options={chartOptions} />
-      </div>
-      <p style={{fontSize: "1.2em", fontWeight: 700, color: "#222"}}>
-        Weighted Mean: <span style={{color: "#e63946"}}>{mean.toFixed(2)}</span>
-      </p>
+
+      <SimpleChart sums={sums} mean={mean} />
 
       <footer style={{
-  background: "#fafafa",
-  color: "#222",
-  borderTop: "2px solid #e63946",
-  marginTop: 40,
-  padding: "24px 16px",
-  fontSize: "1em",
-  lineHeight: 1.6,
-  fontFamily: "Montserrat, Arial, sans-serif"
-}}>
-  <strong>Why “Cake or Rocket?”</strong><br />
-  The app “Cake or Rocket?” was created to help people become more mindful about how they spend their time and energy-balancing instant pleasures (“cake”) with actions that invest in their future (building the “rocket” that brings you to a better distant future).<br /><br />
-  <strong>What benefit to expect:</strong><br />
-  Visualize your balance between instant gratification and long-term investment, gain self-awareness, and make more intentional choices. All data stays on your device for maximum privacy.<br /><br />
-  <span style={{color:"#aaa", fontSize:"0.95em"}}>
-    &copy; {new Date().getFullYear()} Cake or Rocket?
-  </span>
-</footer>
-
+        background: "#fafafa",
+        color: "#222",
+        borderTop: "2px solid #e63946",
+        marginTop: "40px",
+        padding: "24px 16px",
+        fontSize: "1em",
+        lineHeight: 1.6
+      }}>
+        <strong>Why "Cake or Rocket?"</strong><br />
+        This app helps you become more mindful about balancing instant pleasures ("cake") with actions that invest in your future (building the "rocket" that brings you to a better distant future).<br /><br />
+        <strong>Expected Benefits:</strong><br />
+        Visualize your balance between instant gratification and long-term investment, gain self-awareness, and make more intentional choices.<br /><br />
+        <span style={{
+          color: "#aaa",
+          fontSize: "0.95em"
+        }}>
+          &copy; {new Date().getFullYear()} Cake or Rocket?
+        </span>
+      </footer>
     </div>
   );
 }
-
