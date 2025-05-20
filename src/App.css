@@ -177,5 +177,70 @@ button {
   border-radius: 8px;
 }
 
+@media (max-width: 700px) {
+  .responsive-table-container table,
+  .responsive-table-container thead,
+  .responsive-table-container tbody,
+  .responsive-table-container tr,
+  .responsive-table-container th,
+  .responsive-table-container td {
+    display: block;
+    width: 100%;
+  }
+  .responsive-table-container thead {
+    display: none;
+  }
+  .activity-card {
+    background: #fafafa;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(34,34,34,0.07);
+    padding: 16px 12px 12px 12px;
+    position: relative;
+  }
+  .activity-card .activity-input {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #fff;
+    color: #222;
+    box-sizing: border-box;
+  }
+  .activity-card .scale-selector {
+    margin-bottom: 10px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+  }
+  .activity-card .importance-input {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    color: #222;
+    box-sizing: border-box;
+    text-align: right;
+  }
+  .activity-card .delete-btn {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    background: none;
+    color: #e63946;
+    font-weight: 700;
+    font-size: 1.4em;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+}
 
 

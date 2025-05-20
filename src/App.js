@@ -242,40 +242,103 @@ export default function App() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} style={{ textAlign: "center" }}>
-                <td>
-                  <input
-                    value={row.activity}
-                    onChange={(e) => handleChange(i, "activity", e.target.value)}
-                    style={{ width: 160, fontSize: "1em", color: "#222", padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
-                    placeholder="Activity"
-                  />
-                </td>
-                <td>
-                  <ScaleSelector
-                    value={row.scale}
-                    onChange={(idx) => handleChange(i, "scale", idx)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    value={row.importance}
-                    onChange={(e) => handleChange(i, "importance", Number(e.target.value))}
-                    style={{ width: 50, textAlign: "right", fontSize: "1.2em", fontWeight: 700, color: "#222" }}
-                  />
-                </td>
-                <td>
-                  <button onClick={() => removeRow(i)} style={{ color: "#e63946", background: "none", fontWeight: 700, fontSize: "1.2em" }}>
-                    ✕
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {rows.map((row, i) => {
+    // Mobile: Card-Layout
+    if (window.innerWidth <= 700 || false) {
+      return (
+        <tr key={i}>
+          <td colSpan={4} style={{ padding: 0, border: "none" }}>
+
+            <div className="activity-card" style={{ padding: 16, border: "1px solid #ccc", borderRadius: 8, marginBottom: 16 }}>
+              <input
+                className="activity-card activity-input" style={{ width: "100%", fontSize: "1.2em", color: "#222", padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
+                value={row.activity}
+                onChange={(e) => handleChange(i, "activity", e.target.value)}
+                placeholder="Activity"
+              />
+              <ScaleSelector style={{ padding: 10 }}
+                value={row.scale}
+                onChange={(idx) => handleChange(i, "scale", idx)}
+              />
+              <input style={{ width: "10%", fontSize: "1.2em", color: "#222", padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
+                className="importance-input"
+                type="number"
+                min="1"
+                max="100"
+                value={row.importance}
+                onChange={(e) => handleChange(i, "importance", Number(e.target.value))}
+                placeholder="Importance (1–100)"
+              />
+              <button style={{ color: "#e63946", background: "none", fontWeight: 700, fontSize: "1.2em" }}
+                className="delete-btn"
+                onClick={() => removeRow(i)}
+                title="Delete"
+              >
+                ✕
+              </button>
+            </div>
+          </td>
+        </tr>
+      );
+    }
+    // Desktop: Tabellenzeile
+    return (
+      <tr key={i} style={{ textAlign: "center" }}>
+        <td>
+          <input
+            value={row.activity}
+            onChange={(e) => handleChange(i, "activity", e.target.value)}
+            style={{
+              width: 160,
+              fontSize: "1em",
+              color: "#222",
+              padding: 10,
+              borderRadius: 4,
+              border: "1px solid #ccc"
+            }}
+            placeholder="Activity"
+          />
+        </td>
+        <td>
+          <ScaleSelector
+            value={row.scale}
+            onChange={(idx) => handleChange(i, "scale", idx)}
+          />
+        </td>
+        <td>
+          <input
+            type="number"
+            min="1"
+            max="100"
+            value={row.importance}
+            onChange={(e) => handleChange(i, "importance", Number(e.target.value))}
+            style={{
+              width: 50,
+              textAlign: "right",
+              fontSize: "1.2em",
+              fontWeight: 700,
+              color: "#222"
+            }}
+          />
+        </td>
+        <td>
+          <button
+            onClick={() => removeRow(i)}
+            style={{
+              color: "#e63946",
+              background: "none",
+              fontWeight: 700,
+              fontSize: "1.2em"
+            }}
+            title="Delete"
+          >
+            ✕
+          </button>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
         </table>
       </div>
       <button onClick={addRow} style={{ marginBottom: 24, background: "#457b9d", color: "#fff", padding: "8px 16px", borderRadius: 4, border: "none", fontSize: "1.2em", fontWeight: 700, cursor: "pointer" }}>
@@ -310,7 +373,7 @@ export default function App() {
   fontFamily: "Montserrat, Arial, sans-serif"
 }}>
   <strong>Why “Cake or Rocket?”</strong><br />
-  The app “Cake or Rocket?” was created to help people become more mindful about how they spend their time and energy-balancing instant pleasures (“cake”) with actions that invest in their future (“rocket”).<br /><br />
+  The app “Cake or Rocket?” was created to help people become more mindful about how they spend their time and energy-balancing instant pleasures (“cake”) with actions that invest in their future (building the “rocket” that brings you to a better distant future).<br /><br />
   <strong>What benefit to expect:</strong><br />
   Visualize your balance between instant gratification and long-term investment, gain self-awareness, and make more intentional choices. All data stays on your device for maximum privacy.<br /><br />
   <span style={{color:"#aaa", fontSize:"0.95em"}}>
