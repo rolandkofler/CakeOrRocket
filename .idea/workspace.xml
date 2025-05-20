@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f305175-f253-4c3e-9ea1-a898b3bbe9d8" name="Changes" comment="initial">
-      <change beforePath="$PROJECT_DIR$/../CakeOrRocket/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CakeOrRocket/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CakeOrRocket/src/App.css" beforeDir="false" />
+    <list default="true" id="9f305175-f253-4c3e-9ea1-a898b3bbe9d8" name="Changes" comment="MVP achieved!">
       <change beforePath="$PROJECT_DIR$/../CakeOrRocket/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../CakeOrRocket/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -116,7 +114,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747739211201</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="MVP achieved!">
+      <option name="closed" value="true" />
+      <created>1747761676483</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747761676483</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -144,6 +150,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial" />
+    <MESSAGE value="MVP achieved!" />
+    <option name="LAST_COMMIT_MESSAGE" value="MVP achieved!" />
   </component>
 </project>
