@@ -632,7 +632,7 @@ export default function ImprovedApp() {
         <strong>Why "Cake or Rocket?"</strong><br />
         This app helps you become more mindful about balancing instant pleasures ("cake") with actions that invest in your future (building the "rocket" that brings you to a better distant future).<br /><br />
         <strong>Expected Benefits:</strong><br />
-        Visualize your balance between instant gratification and long-term investment, gain self-awareness, and make more intentional choices.<br /><br />
+        Visualize your balance between instant gratification and long-term investment, gain self-awareness, and make more intentional choices. All data stays on your device for maximum privacy.<br /><br />
         <span style={{
           color: "#aaa",
           fontSize: "0.95em"
