@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f305175-f253-4c3e-9ea1-a898b3bbe9d8" name="Changes" comment="initial">
-      <change beforePath="$PROJECT_DIR$/../CakeOrRocket/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/../CakeOrRocket/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CakeOrRocket/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CakeOrRocket/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CakeOrRocket/src/App.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../CakeOrRocket/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../CakeOrRocket/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -44,13 +45,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;5954976e&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/roland/PycharmProjects/CakeOrRocket&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "claude",
+    "last_opened_file_path": "/home/roland/PycharmProjects/CakeOrRocket"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/../CakeOrRocket" />
@@ -107,7 +108,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747667442539</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="initial">
+      <option name="closed" value="true" />
+      <created>1747739211201</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747739211201</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
